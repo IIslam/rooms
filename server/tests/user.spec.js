@@ -1,17 +1,19 @@
 process.env.NODE_ENV = 'test';
 
-const fs = require('fs')
 const app = require("../app")
 const chai = require('chai')
 const chaiHTTP = require('chai-http')
 const testVars = require('./testvars.json')
-const should = chai.should()
 const expect = chai.expect
 const User = require('../models/User')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken');
+const should = chai.should()
+
 chai.use(chaiHTTP)
-describe('User Test',  () => {
+
+describe('User Test',  function () {
+  this.timeout(15000)
   let token = '';
   let user = new User({});
 
@@ -38,15 +40,21 @@ describe('User Test',  () => {
     mongoose.models = {};
     token = ''
     mongoose.modelSchemas = {};
+
     done()
   });
 
-  it('Should delete user account with the correct token', async () => {
-    let res = await chai.request(app).delete(`/api/user/${user._id}`).set('authorization', token)
+  it('Should delete user account with the correct token', (done) => {
+    chai.request(app)
+        .delete(`/api/user/${user._id}`)
+        .set('authorization', token)
+        .end((err, res) => {
+            res.should.have.status(200)
 
-    res.should.have.status(200)
+            expect(res.body.message).to.equal('You have deleted your account.')
+            done()
 
-    expect(res.body.message).to.equal('You have deleted your account.')
+        })
   })
 
   it('Should register a new user with correct info', (done) => {
@@ -67,7 +75,7 @@ describe('User Test',  () => {
     chai.request(app)
       .post('/api/user/register')
       .send({
-        email: user.email,
+        email: 'example@ieee.org',
         password: '159753123Aa',
         password_confirmation: '159753123Aa'
       })
@@ -102,7 +110,7 @@ describe('User Test',  () => {
       .end((err, res) => {
         res.should.have.status(200)
         expect(res.body.user.email).to.equal('mohammedosama@ieee.org')
-        fs.writeFile("./testvars.json", JSON.stringify(res.body), err => err ? console.log(err) : done())
+        done()
       })
   })
 

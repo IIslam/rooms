@@ -8,10 +8,10 @@ const mongoose = require('mongoose')
 
 global._ = require('lodash')
 
-// if (process.env.NODE_ENV == 'test')
-    mongoose.connect('mongodb://admin:123456Aa@ds135335.mlab.com:35335/rooms', { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
-// else
-    // mongoose.connect('mongodb://localhost/rest-rooms', { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
+if (process.env.NODE_ENV == 'test')
+    mongoose.connect('mongodb://localhost/rooms-testing', { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
+else
+    mongoose.connect('mongodb://localhost/rest-rooms', { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
 
 mongoose.Promise = global.Promise
 // middlewares

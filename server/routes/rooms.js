@@ -9,5 +9,5 @@ router.post('/', [auth, RoomPolicy.store], RoomController.store)
 router.get('/', auth, RoomController.index)
 router.get('/:id', auth, RoomController.show)
 router.put('/:id', auth, RoomController.update)
-router.delete('/:id', auth, RoomController.destroy)
+router.delete('/:id', [auth, RoomPolicy.put], RoomController.destroy)
 module.exports = router;

@@ -2,76 +2,135 @@ const Room = require('../models/Room')
 const mongoose = require('mongoose')
 
 module.exports = {
-    async index (req, res) {
-        try {
-            let rooms = await Room.find().populate('user', 'email rooms')
-            if (rooms.length) {
-                res.send(rooms)
-            } else {
-                res.status(404).send({
-                    message: 'No Entries Found'
-                })       
+    index (req, res) {
+        Room.find().populate('user', 'email rooms').exec((err, rooms) => {
+    
+            if (err) {
+                return res.status(500).json({
+                    err
+                })
             }
 
-        } catch(e) {
-            next(e)
-        }
-    },
-    async show (req, res, next) {
-        try {
-            const room = await Room.findById(req.params.id).populate('reservations')
-            res.send({ room })
-        } catch(e) {
-            e.status = 404
-            e.message = "Could not find this room"
-            next(e)
-        }
-    },
-    async store(req, res, next) {
-        try {
-            req.body.user = req.userData.id
-            let room = await Room.create(req.body)
-            res.status(201).send(room)
-        } catch(e) {
-            e.message = 'Something wrong happened.'
-            next(e)
-        }
-    },
-    async update(req, res) {
-        let room = await Room.findById(req.params.id).populate('reservations', 'start_date end_date')
-        if(!_.size(room.reservations)){
-            room = await Room.findByIdAndUpdate(req.params.id, req.body, {
-                new: true
-            })
-            res.send(room)
-        }
-        res.status(400).send({
-            error: {
-                message: 'Room is already reserved, you can not update it at the moment.'
+            if (rooms.length) {
+                return res.status(200).json(
+                    rooms
+                )
             }
+    
+            return res.status(404).json({
+                error: {
+                    message: 'No Entries Found'
+                }
+            })       
+
         })
     },
-    async destroy (req, res) {
-        try {
-            let room = await Room.findById(req.params.id).populate('reservations')
-            if(!_.size(room.reservations)) {
-                room = await User.findByIdAndRemove(req.params.id)
-                if (room) {
-                    res.send({
-                        message: 'You have deleted this room.',
-                        room
-                    })
-                }
-            }            
-            res.status(400).send({
+
+    show (req, res, next) {
+        Room.findById(req.params.id).populate('reservations').populate('user').exec((err, room) => {
+
+            if (err) {
+                return res.status(404).json({
+                    err
+                })
+
+            }
+
+            return res.status(200).json(room)
+
+        })
+    },
+    store(req, res) {
+        req.body.user = req.userData.id
+        
+        Room.create(req.body, (err, room) => {
+            if (err) {
+
+                return res.status(404).json({
+                    err
+                })
+            }
+
+            if (room) {
+                return res.status(201).json(room)
+            }
+
+
+        })
+    },
+    update(req, res) {
+        Room.findById(req.params.id, (err, room) => {
+            console.log(room)
+            if (err) {
+                return res.status(404).json({
+                    err
+                })
+            }
+
+            if(room && !_.size(room.reservations)){
+                Room.findByIdAndUpdate(room.id, req.body, {
+                    new: true
+                }, (err, r) => {
+                    if (err) {
+                        return res.status(404).json({
+                            err
+                        })
+                    }
+                    if (r) {
+                        return res.status(200).json(r)
+                    }                    
+                })
+            }
+    
+            return res.status(400).json({
                 error: {
                     message: 'Room is already reserved, you can not update it at the moment.'
                 }
             })
+    
+        })
+    },
+    destroy (req, res) {
+        Room.findById(req.params.id).populate('reservations').exec((err, room) => {
+            if (err) {
+                return res.status(404).json({
+                    err
+                })
 
-        } catch(e) {
-            next(e)
-        }
+            }
 
+            if (!room) {
+                return res.status(404).json({
+                    error: {
+                        message: 'No Entries Found'
+                    }
+                })       
+                
+            }
+
+            if(room &&  !_.size(room.reservations)) {
+                Room.findByIdAndRemove(room.id, (err, room) => {
+                    if (err) {
+                        return res.status(404).json({
+                            err
+                        })
+
+                    }
+
+                    return res.status(200).send({
+                        "message": 'You have deleted this room.',
+                        room
+                    })
+
+                })
+            }else{
+                return res.status(400).json({
+                    error: {
+                        message: 'Room is already reserved, you can not delete it at the moment.'
+                    }
+                })
+
+            }
+        })
     }
 }
