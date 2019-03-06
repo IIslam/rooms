@@ -13,7 +13,6 @@ const should = chai.should()
 chai.use(chaiHTTP)
 
 describe('User Test',  function () {
-  this.timeout(15000)
   let token = '';
   let user = new User({});
 

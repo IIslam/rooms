@@ -17,7 +17,6 @@ chai.use(chaiHTTP)
 chai.use(chaiHTTP)
 
 describe('Reservations Test', function() {
-  this.timeout(15000)
   let token = '';
 
   let user = new User({});
@@ -132,10 +131,33 @@ describe('Reservations Test', function() {
         end_date: '2019-02-12T07:00:00.000+0000',
       })
       .end((err, res) => {
-        console.log(res.body)
-        done()
+        expect(res.body).to.have.keys('user', 'room', '_id', 'start_date', 'end_date', '__v')
+        done();
       })  
   });
+
+  it('Should not update the reservation date if it was taken', async () => {
+    await Room.findByIdAndUpdate(room.id, {'$push': { 'reservations': reservation._id }})
+    await Reservation.create({
+      start_date: '2019-02-12T09:00:00.000+0000',
+      end_date: '2019-02-12T11:00:00.000+0000',
+      user: user._id,
+      room: room._id
+    })
+
+    chai.request(app)
+      .put(`/api/reservations/${reservation.id}/rooms/${room.id}`)
+      .set('authorization', token)
+      .send({
+        start_date: '2019-02-12T05:00:00.000+0000',
+        end_date: '2019-02-12T10:00:00.000+0000',
+      })
+      .end((err, res) => {
+        expect(res.body).to.have.keys('error')
+      })  
+    
+  });
+  
   
   it('Should delete a reservation', (done) => {
     chai.request(app)

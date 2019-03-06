@@ -17,7 +17,6 @@ chai.use(chaiHTTP)
 chai.use(chaiHTTP)
 
 describe('Rooms Test', function() {
-  this.timeout(15000)
   let token = '';
 
   let user = new User({});
@@ -101,10 +100,8 @@ describe('Rooms Test', function() {
       .get('/api/rooms/' + room.id)
       .set('authorization', token)
       .end((err, res) => {
-        
         res.should.have.status(200)
-
-        expect(res.body).to.have.keys('user', 'reservations', '_id', 'end_hour', 'start_hour', '__v', 'location', 'name')
+        expect(res.body).to.have.keys('user', 'reservations', '_id', 'name', 'end_hour', 'start_hour', '__v', 'location')
         
         done()
       })    
@@ -150,10 +147,8 @@ describe('Rooms Test', function() {
         location: 'C3',
       })
       .end((err, res) => {
-        // console.log(res)
-        // res.should.have.status(200)
-        // console.log(res)
-        // expect(res.body).to.have.keys('user', 'reservations', '_id', 'name', 'location', '__v', 'start_hour', 'end_hour')
+        res.should.have.status(200)
+        expect(res.body).to.have.keys('user', 'reservations', '_id', 'name', 'location', '__v', 'start_hour', 'end_hour')
 
         done()
       })
@@ -161,27 +156,21 @@ describe('Rooms Test', function() {
     
   });
   
-  it('Should not delete a room if it has reservations', async (done) => {
-    console.log(user.id, room.id)
+  it('Should not delete a room if it has reservations', async () => {
     let reservation = await Reservation.create({
       start_date: '2019-02-12T05:00:00.000+0000',
       end_date: '2019-02-12T07:00:00.000+0000',
       user: user.id,
       room: room.id
     })
-
-    room = await Room.findByIdAndUpdate(mongoose.Types.ObjectId(room.id), { reservations: { $push: mongoose.Types.ObjectId(reservation.id) } })
-    console.log(room)
+    await Room.findByIdAndUpdate(room.id, {'$push': { 'reservations': reservation._id }})
     chai.request(app)
       .delete('/api/rooms/' + room.id)
       .set('authorization', token)
       .end((err, res) => {
-        console.log(res)
-        // res.should.have.status(404)
+        res.should.have.status(400)
 
-        // expect(res.body).to.have.keys('err')
-
-        done()
+        expect(res.body).to.have.keys('error')
       })
     
   });
@@ -192,7 +181,6 @@ describe('Rooms Test', function() {
       .delete('/api/rooms/' + room.id)
       .set('authorization', token)
       .end((err, res) => {
-        console.log(res)
         res.should.have.status(200)
 
         expect(res.body).to.have.all.keys('message', 'room')

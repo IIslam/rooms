@@ -107,7 +107,6 @@ module.exports = {
       text: passwordReset.token
     }, (error, info) => {
       if (error) {
-        console.log(error);
       } else {
         res.status(200).send({
           message: 'Token is sent, kindly check your mail.'

@@ -10,7 +10,7 @@ module.exports = {
             if (reservations.length) {
                 return res.json(reservations)
             } else {
-                res.status(404).json({
+                return res.status(404).json({
                     message: 'No Entries Found'
                 })
             }
@@ -28,7 +28,7 @@ module.exports = {
 
             }
 
-            return res.json(reservation)
+            return res.status(200).json(reservation)
 
         })
     },
@@ -45,9 +45,11 @@ module.exports = {
                 },
                 "end_date": {
                     $gte: req.body.start_date
-                }
+                },
+                room: room.id
             })
-            res.status(422).json({
+
+            return res.status(422).json({
                 error: {
                     message: 'Room is already reserved at this time.'
                 }
@@ -57,11 +59,10 @@ module.exports = {
         req.body.user = req.userData.id
         req.body.room = room.id
 
-        const reservation = await Reservation.create(req.body)
-
-        await Room.findByIdAndUpdate(req.params.roomId, { reservations: { $push: reservation._id } })
-
-        res.status(201).json(reservation)
+        Reservation.create(req.body, (err, reservation) => {
+            Room.findByIdAndUpdate(req.params.roomId, { '$push': { 'reservations': reservation._id } })
+            return res.status(201).json(reservation)
+        })
 
     },
     update(req, res) {
@@ -69,16 +70,16 @@ module.exports = {
         req.body.start_date = new Date(req.body.start_date)
         req.body.end_date = new Date(req.body.end_date)
     
-        Room.findById(mongoose.Types.ObjectId(req.params.roomId)).populate('reservations').exec((err, room) => {
+        Room.findById(req.params.roomId).populate('reservations').exec((err, room) => {
             if (_.size(room.reservations)) {
-            // count reservations for the room we are currently at.
                 Reservation.count({
                     "start_date": {
                         $lte: req.body.start_date
                     },
                     "end_date": {
                         $gte: req.body.start_date
-                    }
+                    },
+                    room: room.id
                 }, (err, count) => {
 
                     if (count) {
@@ -103,10 +104,7 @@ module.exports = {
 
         })
 
-        req.body.user = req.userData.id
-        req.body.room = room.id
-        console.log('here')
-        Reservation.findByIdAndUpdate(mongoose.Types.ObjectId(req.params.reservationId), {
+        Reservation.findByIdAndUpdate(req.params.reservationId, {
             start_date: req.body.start_date,
             end_date: req.body.end_date
         }, (err, reservation) => {
@@ -128,11 +126,11 @@ module.exports = {
     async destroy(req, res, next) {
         Reservation.findByIdAndRemove(req.params.id, (err, reservation) => {
             if (err) {
-                res.status(404).send({
+                return res.status(404).send({
                     err
                 })
             }
-            res.json({
+            return res.json({
                 message: 'Your reservation has been cancelled.',
                 reservation
             })

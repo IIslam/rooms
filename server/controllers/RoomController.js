@@ -60,7 +60,6 @@ module.exports = {
     },
     update(req, res) {
         Room.findById(req.params.id, (err, room) => {
-            console.log(room)
             if (err) {
                 return res.status(404).json({
                     err
@@ -72,21 +71,24 @@ module.exports = {
                     new: true
                 }, (err, r) => {
                     if (err) {
+
                         return res.status(404).json({
                             err
                         })
                     }
                     if (r) {
+
                         return res.status(200).json(r)
                     }                    
                 })
+            }else {
+                return res.status(400).json({
+                    error: {
+                        message: 'Room is already reserved, you can not update it at the moment.'
+                    }
+                })
             }
     
-            return res.status(400).json({
-                error: {
-                    message: 'Room is already reserved, you can not update it at the moment.'
-                }
-            })
     
         })
     },
@@ -99,14 +101,6 @@ module.exports = {
 
             }
 
-            if (!room) {
-                return res.status(404).json({
-                    error: {
-                        message: 'No Entries Found'
-                    }
-                })       
-                
-            }
 
             if(room &&  !_.size(room.reservations)) {
                 Room.findByIdAndRemove(room.id, (err, room) => {
@@ -116,7 +110,6 @@ module.exports = {
                         })
 
                     }
-
                     return res.status(200).send({
                         "message": 'You have deleted this room.',
                         room
