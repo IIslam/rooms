@@ -1,5 +1,6 @@
 const Reservation = require('../models/Reservation')
 const Room = require('../models/Room')
+const User = require('../models/User')
 const mongoose = require('mongoose')
 const moment = require('moment');
 
@@ -61,6 +62,7 @@ module.exports = {
 
         Reservation.create(req.body, (err, reservation) => {
             Room.findByIdAndUpdate(req.params.roomId, { '$push': { 'reservations': reservation._id } })
+            User.findByIdAndUpdate(req.userData.id, { '$push': { 'reservations': reservation._id } })
             return res.status(201).json(reservation)
         })
 

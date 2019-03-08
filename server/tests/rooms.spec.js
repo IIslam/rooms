@@ -72,7 +72,7 @@ describe('Rooms Test', function() {
   it('Should return an array of rooms', (done) => {
     chai.request(app)
       .get('/api/rooms')
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
         res.should.have.status(200)
         expect(res.body).to.be.an('array')
@@ -84,7 +84,7 @@ describe('Rooms Test', function() {
   it('Should return a 404 response if showing a non-existing reservation', (done) => {
     chai.request(app)
       .get('/api/rooms/abc')
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
 
         res.should.have.status(404)
@@ -98,7 +98,7 @@ describe('Rooms Test', function() {
   it('Should return the showing room', function(done){
     chai.request(app)
       .get('/api/rooms/' + room.id)
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
         res.should.have.status(200)
         expect(res.body).to.have.keys('user', 'reservations', '_id', 'name', 'end_hour', 'start_hour', '__v', 'location')
@@ -109,7 +109,7 @@ describe('Rooms Test', function() {
   it('Should respond with 404 if trying to delete a non-existing room', (done) => {
     chai.request(app)
       .delete('/api/rooms/abc')
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
         res.should.have.status(404)
 
@@ -122,7 +122,7 @@ describe('Rooms Test', function() {
   it('Should store a room', (done) => {
     chai.request(app)
       .post('/api/rooms')
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .send({
         name: 'Vodafone meeting room A',
         location: 'C2',
@@ -133,7 +133,7 @@ describe('Rooms Test', function() {
 
         res.should.have.status(201)
 
-        expect(res.body).to.have.keys('user', 'reservations', '_id', 'name', 'location', '__v', 'start_hour', 'end_hour')
+        expect(res.body).to.have.keys("message","room")
 
         done()
       })
@@ -142,7 +142,7 @@ describe('Rooms Test', function() {
   it('Should update the room', (done) => {
     chai.request(app)
       .put(`/api/rooms/${room.id}`)
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .send({
         location: 'C3',
       })
@@ -166,7 +166,7 @@ describe('Rooms Test', function() {
     await Room.findByIdAndUpdate(room.id, {'$push': { 'reservations': reservation._id }})
     chai.request(app)
       .delete('/api/rooms/' + room.id)
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
         res.should.have.status(400)
 
@@ -179,7 +179,7 @@ describe('Rooms Test', function() {
   it('Should delete a room', (done) => {
     chai.request(app)
       .delete('/api/rooms/' + room.id)
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
         res.should.have.status(200)
 

@@ -3,8 +3,8 @@ const Joi = require('joi')
 module.exports = {
     store (req, res, next) {
         const schema = {
-          start_hour: Joi.number().min(0).max(24).integer().required(),
-          end_hour: Joi.number().min(0).max(24).integer().required(),
+          start_hour: Joi.required(),
+          end_hour: Joi.required(),
           name: Joi.string().min(3).max(32).required(),
           location: Joi.required()
         }

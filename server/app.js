@@ -1,4 +1,3 @@
-process.env.JWT_KEY = 'somesecret'
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
@@ -8,9 +7,10 @@ const mongoose = require('mongoose')
 
 global._ = require('lodash')
 
-if (process.env.NODE_ENV == 'test')
+if (process.env.NODE_ENV == 'test'){
+    process.env.JWT_KEY = 'somesecret'
     mongoose.connect('mongodb://localhost/rooms-testing', { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
-else
+} else
     mongoose.connect('mongodb://localhost/rest-rooms', { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
 
 mongoose.Promise = global.Promise

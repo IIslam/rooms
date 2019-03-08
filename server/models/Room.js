@@ -7,21 +7,21 @@ const roomSchema = new Schema({
         unique: true
     },
     start_hour: {
-        type: Number,
+        type: String,
         required: true,
     },
     end_hour: {
-        type: Number,
+        type: String,
         required: true
     },
     location: {
         type: String,
         required: true
     },
-    user : [{
+    user : {
         type: Schema.Types.ObjectId,
         ref: 'User'
-   }],
+   },
     reservations : [{
         type: Schema.Types.ObjectId,
         ref: 'Reservation'

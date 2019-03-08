@@ -7,7 +7,7 @@ const mailService = require('../services/mail')
 module.exports = {
   async login(req, res) {
     const { email, password } = req.body
-    let user = await User.findOne({ email })
+    let user = await User.findOne({ email }).populate('reservations')
     if (!user) {
       return res.status(401).send({
         message: 'Invalid Credentials.'
@@ -21,6 +21,9 @@ module.exports = {
       }
       const token = jwt.sign(
         {
+          reservations: user.reservations,
+          rooms: user.rooms,
+          name: user.name,
           email: user.email,
           id: user._id
         },
@@ -31,11 +34,6 @@ module.exports = {
       )
       return res.status(200).send({
         message: 'Logged In.',
-        user: {
-          email: user.email,
-          rooms: user.rooms,
-          id: user.id
-        },
         meta: {
           token
         }
@@ -43,7 +41,7 @@ module.exports = {
     })
   },
   async register(req, res, next) {
-    const { email, password } = req.body
+    const { email, password, name } = req.body
     User.find({ email }).exec().then(user => {
       if (user.length) {
         return res.status(403).send({
@@ -58,7 +56,8 @@ module.exports = {
         }
         const user = new User({
           email: email,
-          password: hash
+          password: hash,
+          name: name
         })
         user.save().then(user => {
           res.status(200).send({
@@ -104,7 +103,7 @@ module.exports = {
       from: process.env.USER_MAIL,
       to: req.body.email,
       subject: 'Reset your password',
-      text: passwordReset.token
+      html: `Hello There, click this link in order to reset your password <a href="http://localhost:3000/auth/reset-password?token=${passwordReset.token}"> here </a>`
     }, (error, info) => {
       if (error) {
       } else {
@@ -115,7 +114,7 @@ module.exports = {
     })
   },
   async me(req, res) {
-    res.status(200).send({ data: req.userData })
+    return res.status(200).json({ user:  req.userData })
   },
   async destroy(req, res) {
     let user = await User.findByIdAndRemove(req.params.id)

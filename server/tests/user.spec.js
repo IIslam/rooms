@@ -18,6 +18,7 @@ describe('User Test',  function () {
 
   beforeEach(() => {
     user = new User({
+      name: testVars.user.name,
       password: testVars.user.password,
       email: testVars.user.email,
     });
@@ -46,12 +47,11 @@ describe('User Test',  function () {
   it('Should delete user account with the correct token', (done) => {
     chai.request(app)
         .delete(`/api/user/${user._id}`)
-        .set('authorization', token)
+        .set('authorization',`Bearer ${token}`)
         .end((err, res) => {
-            res.should.have.status(200)
-
-            expect(res.body.message).to.equal('You have deleted your account.')
-            done()
+          res.should.have.status(200)
+          expect(res.body.message).to.equal('You have deleted your account.')
+          done()
 
         })
   })
@@ -60,6 +60,7 @@ describe('User Test',  function () {
     chai.request(app)
       .post('/api/user/register')
       .send({
+        name: 'hellothere',
         email: 'example@ieee.org',
         password: '159753123Aa',
         password_confirmation: '159753123Aa'
@@ -74,7 +75,8 @@ describe('User Test',  function () {
     chai.request(app)
       .post('/api/user/register')
       .send({
-        email: 'example@ieee.org',
+        name: 'hellothere',
+        email: testVars.user.email,
         password: '159753123Aa',
         password_confirmation: '159753123Aa'
       })
@@ -89,6 +91,7 @@ describe('User Test',  function () {
     chai.request(app)
       .post('/api/user/register')
       .send({
+        name: 'hellothere',
         email: 'new@test.com',
         password: '159753123Aa',
         password_confirmation: '159753123AaA'
@@ -108,7 +111,7 @@ describe('User Test',  function () {
       })
       .end((err, res) => {
         res.should.have.status(200)
-        expect(res.body.user.email).to.equal('mohammedosama@ieee.org')
+        expect(res.body).to.have.keys('message', 'meta')
         done()
       })
   })
@@ -130,10 +133,10 @@ describe('User Test',  function () {
   it('Should get logged in user data with the correct token', (done) => {
     chai.request(app)
       .get('/api/user/')
-      .set("authorization", token)
+      .set("authorization",`Bearer ${token}`)
       .end((err, res) => {
         res.should.have.status(200)
-        expect(res.body.data.email).to.equal(testVars.user.email)
+        expect(res.body.user.email).to.equal(testVars.user.email)
         done()
       })
   })

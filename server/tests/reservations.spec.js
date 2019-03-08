@@ -49,7 +49,6 @@ describe('Reservations Test', function() {
       room: room._id
     })
     reservation.save(() => {})
-    
     token = jwt.sign(
       {
         email: user.email,
@@ -82,7 +81,7 @@ describe('Reservations Test', function() {
   it('Should return an array of reservations', (done) => {
     chai.request(app)
       .get('/api/reservations')
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
         res.should.have.status(200)
         expect(res.body).to.be.an('array')
@@ -94,7 +93,7 @@ describe('Reservations Test', function() {
   it('Should return a 404 response if showing a non-existing reservation', (done) => {
     chai.request(app)
       .get('/api/reservations/abc')
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
 
         res.should.have.status(404)
@@ -106,12 +105,12 @@ describe('Reservations Test', function() {
     
   });
 
-  it('Should return the showing reservation', function(done){
+  it('Should return the showing reservation', (done) => {
     chai.request(app)
       .get('/api/reservations/' + reservation.id)
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
-        
+        console.log('>>>>>>>>>>>>>>>>>>>' ,token, res.body)        
         res.should.have.status(200)
 
         expect(res.body).to.have.keys('user', 'room', '_id', 'start_date', 'end_date', '__v')
@@ -125,7 +124,7 @@ describe('Reservations Test', function() {
   it('Should update an existing reservation', (done) => {
     chai.request(app)
       .put(`/api/reservations/${reservation.id}/rooms/${room.id}`)
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .send({
         start_date: '2019-02-12T05:00:00.000+0000',
         end_date: '2019-02-12T07:00:00.000+0000',
@@ -147,7 +146,7 @@ describe('Reservations Test', function() {
 
     chai.request(app)
       .put(`/api/reservations/${reservation.id}/rooms/${room.id}`)
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .send({
         start_date: '2019-02-12T05:00:00.000+0000',
         end_date: '2019-02-12T10:00:00.000+0000',
@@ -162,7 +161,7 @@ describe('Reservations Test', function() {
   it('Should delete a reservation', (done) => {
     chai.request(app)
       .delete('/api/reservations/' + reservation.id)
-      .set('authorization', token)
+      .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
 
         res.should.have.status(200)

@@ -52,7 +52,10 @@ module.exports = {
             }
 
             if (room) {
-                return res.status(201).json(room)
+                return res.status(201).json({
+                    room,
+                    message: 'Room is created successfully'
+                })
             }
 
 

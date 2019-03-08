@@ -1,6 +1,10 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const userSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -13,17 +17,24 @@ const userSchema = new Schema({
     },
     rooms: [{
         type: Schema.Types.ObjectId, ref: 'Room' 
+    }],
+    reservations: [{
+        type: Schema.Types.ObjectId, ref: 'Reservation' 
     }]
 
 })
 userSchema.post('find', async (docs,next) => {
-    for (let doc of docs) 
-      await doc.populate('rooms').execPopulate();
+    for (let doc of docs) {
+      await doc.populate('rooms').execPopulate()
+      await doc.populate('reservations').execPopulate()
+    }
+
     
     next()
 })
 userSchema.post('save', (doc, next) => {
   doc.populate('rooms').execPopulate().then( () => next());
+  doc.populate('reservations').execPopulate().then( () => next());
 });
 
 module.exports = mongoose.model('User', userSchema)

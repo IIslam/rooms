@@ -1,5 +1,5 @@
 <template>
-  <v-app dark>
+  <v-app >
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -19,7 +19,9 @@
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title v-text="item.title" />
+            <v-list-tile-title>
+              {{ item.title }}
+            </v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -36,79 +38,123 @@
       >
         <v-icon>{{ `chevron_${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
-      <v-btn
-        icon
-        @click.stop="clipped = !clipped"
-      >
-        <v-icon>web</v-icon>
-      </v-btn>
-      <v-btn
-        icon
-        @click.stop="fixed = !fixed"
-      >
-        <v-icon>remove</v-icon>
-      </v-btn>
       <v-toolbar-title v-text="title" />
-      <v-btn
-        icon
-        @click.stop="rightDrawer = !rightDrawer"
-      >
-        <v-icon>menu</v-icon>
-      </v-btn>
+
+          <v-spacer></v-spacer>
+          <template v-if="authenticated">
+            {{ user.name }}
+          </template>
+
+           <v-menu bottom left>
+
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>apps</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list v-if="authenticated">
+              <v-list-tile
+                v-for="(item, i) in auth"
+                :key="i"
+              >
+                <v-list-tile-title>
+                  <nuxt-link :to="item.to" >
+                    <v-icon>{{ item.icon }}</v-icon>
+                    {{ item.title }}
+                  </nuxt-link>
+                </v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-title @click.prevent="logoutUser"> <a href="#"><v-icon>forward</v-icon>Logout</a> </v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+            <v-list v-else>
+              <v-list-tile
+                v-for="(item, i) in guest"
+                :key="i"
+              >
+                <v-list-tile-title>
+                  <nuxt-link :to="item.to"> {{ item.title }}</nuxt-link>
+                </v-list-tile-title>
+              </v-list-tile>
+              
+            </v-list>
+          </v-menu>
     </v-toolbar>
     <v-content>
       <v-container>
         <nuxt />
       </v-container>
     </v-content>
-    <v-navigation-drawer
-      v-model="rightDrawer"
-      :right="right"
-      temporary
-      fixed
-    >
-      <v-list>
-        <v-list-tile @click.native="right = !right">
-          <v-list-tile-action>
-            <v-icon light>compare_arrows</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-title>Switch drawer (click me)</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-navigation-drawer>
     <v-footer
       :fixed="fixed"
       app
     >
-      <span>&copy; 2019</span>
+      <span>Vodafone Rooms &copy; 2019</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
 export default {
   data() {
     return {
       clipped: false,
       drawer: false,
       fixed: false,
+      auth: [
+        {
+          icon: 'add',
+          title: 'Reserve a room',
+          to: '/rooms'
+        },
+        {
+          icon: 'add',
+          title: 'Create a room',
+          to: '/rooms/create'
+        }
+      ],
+      guest: [
+        {
+          icon: 'person_add',
+          title: 'Register',
+          to: '/auth/register'
+        },
+        {
+          icon: 'keyboard_arrow_right',
+          title: 'Login',
+          to: '/auth/login'
+        }
+
+      ],
       items: [
         {
           icon: 'apps',
-          title: 'Welcome',
+          title: 'Home',
           to: '/'
         },
-        {
-          icon: 'bubble_chart',
-          title: 'Inspire',
-          to: '/inspire'
-        }
       ],
       miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      title: 'Vodafone Rooms'
+    }
+  },
+  methods: {
+    ...mapActions('auth', ['logout']),
+    logoutUser() {
+      this.logout().then(() => {
+        window.location = '/'
+      })
     }
   }
 }
 </script>
+<style>
+  a {
+    text-decoration: none
+  }
+</style>
