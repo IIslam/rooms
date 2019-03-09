@@ -1,6 +1,4 @@
 process.env.NODE_ENV = 'test';
-
-const fs = require('fs')
 const app = require("../app")
 const chai = require('chai')
 const chaiHTTP = require('chai-http')
@@ -37,8 +35,8 @@ describe('Reservations Test', function() {
       user: user._id,
       name: 'Vodafone meeting room',
       'location': 'C2',
-      'start_hour': 5,
-      'end_hour': 10
+      'start_hour': "05:00",
+      'end_hour': "10:00"
     })
     room.save(() => {})
     
@@ -110,11 +108,8 @@ describe('Reservations Test', function() {
       .get('/api/reservations/' + reservation.id)
       .set('authorization',`Bearer ${token}`)
       .end((err, res) => {
-        console.log('>>>>>>>>>>>>>>>>>>>' ,token, res.body)        
         res.should.have.status(200)
-
         expect(res.body).to.have.keys('user', 'room', '_id', 'start_date', 'end_date', '__v')
-        
         done()
       })
 
@@ -126,11 +121,11 @@ describe('Reservations Test', function() {
       .put(`/api/reservations/${reservation.id}/rooms/${room.id}`)
       .set('authorization',`Bearer ${token}`)
       .send({
-        start_date: '2019-02-12T05:00:00.000+0000',
-        end_date: '2019-02-12T07:00:00.000+0000',
+        start_date: '2019-02-12T03:00:00.000+0000',
+        end_date: '2019-02-12T08:00:00.000+0000',
       })
       .end((err, res) => {
-        expect(res.body).to.have.keys('user', 'room', '_id', 'start_date', 'end_date', '__v')
+        expect(res.body).to.have.key('reservation','message')
         done();
       })  
   });
@@ -157,7 +152,7 @@ describe('Reservations Test', function() {
     
   });
   
-  
+  // validate for store method. 
   it('Should delete a reservation', (done) => {
     chai.request(app)
       .delete('/api/reservations/' + reservation.id)

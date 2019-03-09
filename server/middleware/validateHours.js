@@ -3,7 +3,7 @@ const moment = require('moment');
 const mongoose = require('mongoose')
 
 module.exports = (req, res, next) => {
-    Room.findById(mongoose.Types.ObjectId(req.params.roomId), (err, room) => {
+    Room.findById(req.params.roomId, (err, room) => {
         if (err) {
             return res.status(404).json({
                 err 
@@ -16,9 +16,12 @@ module.exports = (req, res, next) => {
                 }
             })
         }
-        const start_hour = moment(req.body.start_date).hour()
-
-        const end_hour = moment(req.body.end_date).hour()
+        const start_hour = moment(req.body.start_date).format("hh:mm")
+        const end_hour = moment(req.body.end_date).format("hh:mm")
+        console.log(start_hour, room.start_hour, end_hour, room.end_hour, start_hour === room.start_hour,
+            start_hour < room.end_hour,
+            end_hour > start_hour ,
+            room.end_hour >= end_hour)
         if (
             start_hour >= room.start_hour &&
             start_hour < room.end_hour &&

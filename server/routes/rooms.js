@@ -9,5 +9,6 @@ router.post('/', [auth, RoomPolicy.store], RoomController.store)
 router.get('/', RoomController.index)
 router.get('/:id', RoomController.show)
 router.put('/:id', auth, RoomController.update)
+router.post('/search', [auth, RoomPolicy.search], RoomController.search)
 router.delete('/:id', [auth, RoomPolicy.put], RoomController.destroy)
 module.exports = router;

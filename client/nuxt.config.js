@@ -57,7 +57,6 @@ module.exports = {
           user: {
             url: '/user',
             method: 'get',
-            propertyName: 'user'
           },
           logout: {
             url: '/user/logout',

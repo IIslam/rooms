@@ -18,4 +18,13 @@ const reservationSchema = new Schema({
         required: true
     }
 })
+reservationSchema.post('find', async (docs,next) => {
+    for (let doc of docs) {
+      await doc.populate('room').execPopulate()
+    }
+
+    
+    next()
+})
+
 module.exports = mongoose.model('Reservation', reservationSchema)

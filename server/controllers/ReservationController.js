@@ -1,9 +1,6 @@
 const Reservation = require('../models/Reservation')
 const Room = require('../models/Room')
 const User = require('../models/User')
-const mongoose = require('mongoose')
-const moment = require('moment');
-
 module.exports = {
 
     index(req, res) {
@@ -40,7 +37,7 @@ module.exports = {
         req.body.end_date = new Date(req.body.end_date)
 
         if (_.size(room.reservations)) {
-            let number = await Reservation.count({
+            Reservation.count({
                 "start_date": {
                     $lte: req.body.start_date
                 },
@@ -48,11 +45,20 @@ module.exports = {
                     $gte: req.body.start_date
                 },
                 room: room.id
-            })
+            },(err, count) => {
 
-            return res.status(422).json({
-                error: {
-                    message: 'Room is already reserved at this time.'
+                if (count) {
+                    return res.status(422).json({
+                        error: {
+                            message: 'Room is already reserved at this time.'
+                        }
+                    })
+
+                }
+                if (err) {
+                    return res.status(400).json({
+                        err
+                    })
                 }
             })
         }
@@ -63,7 +69,10 @@ module.exports = {
         Reservation.create(req.body, (err, reservation) => {
             Room.findByIdAndUpdate(req.params.roomId, { '$push': { 'reservations': reservation._id } })
             User.findByIdAndUpdate(req.userData.id, { '$push': { 'reservations': reservation._id } })
-            return res.status(201).json(reservation)
+            return res.status(201).json({
+                reservation,
+                message: 'Alright, we picked up the room for you.'
+            })
         })
 
     },
@@ -119,7 +128,10 @@ module.exports = {
 
             }
 
-            return res.status(200).json(reservation)
+            return res.status(200).json({
+                reservation,
+                message: 'Your reservation has been updated.'
+            })
         
         })
 

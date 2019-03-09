@@ -6,6 +6,8 @@ const chaiHTTP = require('chai-http')
 const testVars = require('./testvars.json')
 const expect = chai.expect
 const User = require('../models/User')
+const Room = require('../models/Room')
+const Reservation = require('../models/Reservation')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken');
 const should = chai.should()
@@ -37,6 +39,8 @@ describe('User Test',  function () {
 
   afterEach((done) => {
     User.deleteOne(() => {});
+    Room.deleteMany(() => {})
+    Reservation.deleteMany(() => {})
     mongoose.models = {};
     token = ''
     mongoose.modelSchemas = {};
@@ -115,7 +119,38 @@ describe('User Test',  function () {
         done()
       })
   })
+  it('Should return the user when authenticated associated with reservations', (done) => {
+      
+    Room.create({
+      user: user._id,
+      name: 'Vodafone meeting room for developers',
+      'location': 'C2',
+      'start_hour': 5,
+      'end_hour': 10
+    }, (err, room) => {
+        console.log(err)
+      Reservation.create({
+        start_date: '2019-02-12T05:00:00.000+0000',
+        end_date: '2019-02-12T07:00:00.000+0000',
+        user: user._id,
+        room: room._id
+      },(err, reservation) => {
+        chai.request(app)
+          .get('/api/user')
+          .set("authorization",`Bearer ${token}`)
+          .end((err, res) => {
+            res.should.have.status(200)
+            expect(res.body).to.have.keys('user')
+            expect(res.body.user.reservations.length).to.equal(1)
+            done()
+        })
+      })
 
+    })
+    
+    
+  });
+  
   it('Should not login a user with invalid credentials', (done) => {
     chai.request(app)
       .post('/api/user/login')

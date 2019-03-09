@@ -1,6 +1,4 @@
 process.env.NODE_ENV = 'test';
-
-const fs = require('fs')
 const app = require("../app")
 const chai = require('chai')
 const chaiHTTP = require('chai-http')
@@ -157,7 +155,7 @@ describe('Rooms Test', function() {
   });
   
   it('Should not delete a room if it has reservations', async () => {
-    let reservation = await Reservation.create({
+    reservation = await Reservation.create({
       start_date: '2019-02-12T05:00:00.000+0000',
       end_date: '2019-02-12T07:00:00.000+0000',
       user: user.id,
@@ -175,7 +173,29 @@ describe('Rooms Test', function() {
     
   });
   
-  
+  it('Should search for rooms by hours',  (done) => {
+    Room.create({
+      user: user._id,
+      name: 'Vodafone meeting room for developers',
+      'location': 'C2',
+      'start_hour': 3,
+      'end_hour': 11
+    }, (err, room) => {
+      chai.request(app)
+        .post('/api/rooms/search')
+        .set('authorization',`Bearer ${token}`)
+        .send({
+          start_hour: 3,
+          end_hour: 8
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res.body).to.have.all.keys('message', 'rooms')
+          expect(res.body.rooms.length).to.be.equal(2)
+          done()
+        })
+    })
+  })
   it('Should delete a room', (done) => {
     chai.request(app)
       .delete('/api/rooms/' + room.id)

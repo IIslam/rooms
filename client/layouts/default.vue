@@ -39,6 +39,18 @@
         <v-icon>{{ `chevron_${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
       <v-toolbar-title v-text="title" />
+          <v-flex xs6>
+            <v-text-field
+              right
+              append-icon="gps_fixed"
+              v-validate="'required|min:3'"
+              :error-messages="errors.collect('search')"
+              label="search"
+              data-vv-name="search"
+              required
+            />
+            
+          </v-flex>
 
           <v-spacer></v-spacer>
           <template v-if="authenticated">
@@ -84,7 +96,9 @@
               
             </v-list>
           </v-menu>
+
     </v-toolbar>
+
     <v-content>
       <v-container>
         <nuxt />
@@ -117,6 +131,11 @@ export default {
           icon: 'add',
           title: 'Create a room',
           to: '/rooms/create'
+        },
+        {
+          icon: 'add',
+          title: 'Your Reservations',
+          to: '/auth/user/reservations'
         }
       ],
       guest: [

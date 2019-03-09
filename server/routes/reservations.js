@@ -9,7 +9,7 @@ const ReservationPolicy = require('../policies/ReservationPolicy.js')
 router.get('/', auth, ReservationController.index)
 router.get('/:id', auth, ReservationController.show)
 
-router.post('/:roomId', [auth, ReservationPolicy.put], ReservationController.store)
+router.post('/:roomId', [auth, ReservationPolicy.put, validateHours], ReservationController.store)
 router.put('/:reservationId/rooms/:roomId', [auth, ReservationPolicy.put, validateHours] , ReservationController.update)
 router.delete('/:id', auth, ReservationController.destroy)
 

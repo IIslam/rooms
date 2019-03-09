@@ -1,4 +1,5 @@
 const User = require('../models/User')
+const Reservation = require('../models/Reservation')
 const PasswordReset = require('../models/PasswordReset')
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
@@ -106,6 +107,10 @@ module.exports = {
       html: `Hello There, click this link in order to reset your password <a href="http://localhost:3000/auth/reset-password?token=${passwordReset.token}"> here </a>`
     }, (error, info) => {
       if (error) {
+        return res.status(500).send({
+          error
+        })
+
       } else {
         res.status(200).send({
           message: 'Token is sent, kindly check your mail.'
@@ -113,8 +118,21 @@ module.exports = {
       }
     })
   },
-  async me(req, res) {
-    return res.status(200).json({ user:  req.userData })
+  me(req, res) {
+    Reservation.find({
+      user: req.userData.id
+    }, (err, reservations) => {
+      if (err) {
+        return res.status(500).send({
+          error
+        })
+
+      }else{
+        req.userData.reservations = reservations
+        return res.status(200).json({ user:  req.userData })
+      }
+
+    })
   },
   async destroy(req, res) {
     let user = await User.findByIdAndRemove(req.params.id)

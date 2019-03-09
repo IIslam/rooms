@@ -7,10 +7,10 @@ module.exports = {
     }
     const { error, value } = Joi.validate(req.body, schema)
     if (error) {
-        return res.status(422).json({
-          messages: error.details.map((error) => error.message),
-          data: value
-        });
+      return res.status(422).json({
+        messages: error.details.map((error) => error.message),
+        data: value
+      });
     }
     next()
   },

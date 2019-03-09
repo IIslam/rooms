@@ -1,7 +1,29 @@
 const Room = require('../models/Room')
 const mongoose = require('mongoose')
-
+const moment = require('moment')
 module.exports = {
+    search (req, res) {
+
+        Room.find({
+            "start_hour": {
+                $gte: req.body.start_hour
+            },
+            "end_hour": {
+                $lte: req.body.end_hour
+            },
+
+        }, (err, rooms) => {
+            if (err) {
+                return res.status(400).json({
+                    err
+                })
+            }
+            return res.status(200).json({
+                rooms,
+                message: "Alright, let's pick up a reservation for you."
+            })
+        })
+    },
     index (req, res) {
         Room.find().populate('user', 'email rooms').exec((err, rooms) => {
     

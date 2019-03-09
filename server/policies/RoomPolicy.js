@@ -1,6 +1,29 @@
 const Joi = require('joi')
 
 module.exports = {
+    search (req, res, next) {
+        const schema = {
+          start_hour: Joi.required(),
+          end_hour: Joi.required(),
+        }
+        const { error, value } = Joi.validate(req.body, schema)
+        if (error) {
+            return res.status(422).json({
+                messages: error.details.map((error) => error.message),
+                data: value
+            });
+        }
+        if (req.body.start_hour > req.body.end_hour) {
+            return res.status(422).json({
+                error: {
+                    message: "Start hour should be less than end hour."
+                }
+            })
+        }
+        next()
+
+
+    },
     store (req, res, next) {
         const schema = {
           start_hour: Joi.required(),
