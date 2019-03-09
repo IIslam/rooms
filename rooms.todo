@@ -1,0 +1,12 @@
+ ☐  if user logs out and refresh the page, he remains authenticated despite of clearing the store, and removing ajax authorization headers.
+ ☐ Do we need to validate the day of reserving? or just allow user to reserve within different days.
+   - if so check it on validateHours middleware ( create validateDays similarly )
+ ☐ ACL
+   - user_roles table
+   - many-to-many relation between user and roles.
+   - on logging in the user, eager load the roles the user has.
+ ✔ Cancel Reservation @done (19-03-09 04:24)
+ ✔ Update Reservation @done (19-03-09 04:46)
+ ✔ Index User Reservations. @done (19-03-09 04:24)
+ ✔ Search rooms by hours. @done (19-03-09 04:24) (it only works when time is exactly the one we have inside our database, however it works on the unit-test suite correctly.)
+ ☐ Load Relationships using mongoose.
