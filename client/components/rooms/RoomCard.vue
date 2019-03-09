@@ -20,7 +20,7 @@
                           <div>
                             <div class="headline">{{ room.name }}</div>
                             <div>{{ room.location }}</div>
-                            <div>(2014)</div>
+                            <div> available from {{ room.start_hour }} to {{ room.end_hour }}</div>
                           </div>
                         </v-card-title>
                       </v-flex>

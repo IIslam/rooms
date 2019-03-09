@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 module.exports = {
     search (req, res) {
-
         Room.find({
             "start_hour": {
                 $gte: req.body.start_hour

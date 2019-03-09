@@ -70,6 +70,10 @@
       login(){
         this.$auth.login({
           data: this.form
+        }).then(() => {
+          this.$route.push({
+            name: 'index'
+          })
         })
       },
     }
