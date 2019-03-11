@@ -4,11 +4,11 @@ const config = {
         DATABASE: process.env.MONGODB_URI
     },
     default: {
-        SECRET: 'SUPER_SECRET-PASSWORD!123?',
-        DATABASE: 'mongodb://localhost:27017/feedback'
+        SECRET: "SUPER_SECRET-PASSWORD!123?",
+        DATABASE: "mongodb://localhost:27017/feedback"
     }
-}
+};
 
 exports.get = function get(env) {
-    return config[env] || config.default
-}
+    return config[env] || config.default;
+};

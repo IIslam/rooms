@@ -1,5 +1,5 @@
-const mongoose = require('mongoose').set('debug', true)
-const Schema = mongoose.Schema
+const mongoose = require("mongoose").set("debug", true);
+const Schema = mongoose.Schema;
 const roomSchema = new Schema({
     name: {
         type: String,
@@ -8,7 +8,7 @@ const roomSchema = new Schema({
     },
     start_hour: {
         type: String,
-        required: true,
+        required: true
     },
     end_hour: {
         type: String,
@@ -18,15 +18,16 @@ const roomSchema = new Schema({
         type: String,
         required: true
     },
-    user : {
+    user: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
-   },
-    reservations : [{
-        type: Schema.Types.ObjectId,
-        ref: 'Reservation'
-   }],
+        ref: "User"
+    },
+    reservations: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Reservation"
+        }
+    ]
+});
 
-})
-
-module.exports = mongoose.model('Room', roomSchema)
+module.exports = mongoose.model("Room", roomSchema);

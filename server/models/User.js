@@ -1,5 +1,5 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 const userSchema = new Schema({
     name: {
         type: String,
@@ -15,26 +15,34 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    rooms: [{
-        type: Schema.Types.ObjectId, ref: 'Room' 
-    }],
-    reservations: [{
-        type: Schema.Types.ObjectId, ref: 'Reservation' 
-    }]
-
-})
-userSchema.post('find', async (docs,next) => {
+    rooms: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Room"
+        }
+    ],
+    reservations: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Reservation"
+        }
+    ]
+});
+userSchema.post("find", async (docs, next) => {
     for (let doc of docs) {
-      await doc.populate('rooms').execPopulate()
-      await doc.populate('reservations').execPopulate()
+        await doc.populate("rooms").execPopulate();
+        await doc.populate("reservations").execPopulate();
     }
 
-    
-    next()
-})
-userSchema.post('save', (doc, next) => {
-  doc.populate('rooms').execPopulate().then( () => next());
-  doc.populate('reservations').execPopulate().then( () => next());
+    next();
+});
+userSchema.post("save", (doc, next) => {
+    doc.populate("rooms")
+        .execPopulate()
+        .then(() => next());
+    doc.populate("reservations")
+        .execPopulate()
+        .then(() => next());
 });
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model("User", userSchema, "User");
