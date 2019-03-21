@@ -4,20 +4,20 @@
   </div>
 </template>
 <script>
-  import { mapActions, mapGetters } from 'vuex'
-  import RoomCard from '@/components/rooms/RoomCard'
-  export default {
-    components: {
-      RoomCard
-    },
-    async fetch({ store }) {
-      await store.dispatch('room/index')
-    },
-    computed: {
-      ...mapGetters('room', ['rooms'])
-    },
-    methods: {
-      ...mapActions('room', ['destroy'])
-    }
+import { mapActions, mapGetters } from 'vuex'
+import RoomCard from '@/components/rooms/RoomCard'
+export default {
+  components: {
+    RoomCard
+  },
+  async fetch({ store }) {
+    await store.dispatch('room/index')
+  },
+  computed: {
+    ...mapGetters('room', ['rooms'])
+  },
+  methods: {
+    ...mapActions('room', ['destroy'])
   }
+}
 </script>

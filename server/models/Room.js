@@ -29,5 +29,15 @@ const roomSchema = new Schema({
         }
     ]
 });
+roomSchema.post("findByIdAndRemove", async (doc, next) => {
+    console.log('>>>>>', doc)
+    // for (let doc of docs) {
+    //     await doc.populate("rooms").execPopulate();
+    //     await doc.populate("reservations").execPopulate();
+    // }
+
+    next();
+});
+
 
 module.exports = mongoose.model("Room", roomSchema);

@@ -52,36 +52,34 @@
     </v-content>
 </template>
 <script>
-  import { mapActions } from 'vuex'
-  export default {
-    middleware: ['guest', 'has-reset-token'],
-    data () {
-        return {
-          form : {
-            password : null,
-            password_confirmation:  null
-          }
-        }
-    },
-    computed: {
-      isCompleted() {
-        return this.form.password && this.form.password_confirmation
-      }
-    },
-    methods : {
-      ...mapActions('auth', [
-        'resetPassword'
-      ]),
-      submit(){
-        this.resetPassword({
-          form: this.form,
-          token: this.$route.query.token
-        }).then(() => {
-          this.$router.push({
-              name :'index'
-          })
-        })
+import { mapActions } from 'vuex'
+export default {
+  middleware: ['guest', 'has-reset-token'],
+  data() {
+    return {
+      form: {
+        password: null,
+        password_confirmation: null
       }
     }
+  },
+  computed: {
+    isCompleted() {
+      return this.form.password && this.form.password_confirmation
+    }
+  },
+  methods: {
+    ...mapActions('auth', ['resetPassword']),
+    submit() {
+      this.resetPassword({
+        form: this.form,
+        token: this.$route.query.token
+      }).then(() => {
+        this.$router.push({
+          name: 'index'
+        })
+      })
+    }
   }
+}
 </script>

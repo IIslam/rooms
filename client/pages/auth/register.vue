@@ -73,30 +73,35 @@
     </v-content>
 </template>
 <script>
-  export default {
-    middleware: 'guest',
-    data () {
-        return {
-          form: {
-            name: '',
-            email: '',
-            password: '',
-            password_confirmation: ''
-          }
-        }
-    },
-    computed: {
-        isCompleted() {
-            return this.form.name && this.form.email && this.form.password_confirmation && this.form.password
-        }
-    },
-    methods : {
-        async register(){
-            await this.$axios.post('/user/register' , this.form)
-            this.$router.push({
-                name :'index'
-            })
-        },
+export default {
+  middleware: 'guest',
+  data() {
+    return {
+      form: {
+        name: '',
+        email: '',
+        password: '',
+        password_confirmation: ''
+      }
+    }
+  },
+  computed: {
+    isCompleted() {
+      return (
+        this.form.name &&
+        this.form.email &&
+        this.form.password_confirmation &&
+        this.form.password
+      )
+    }
+  },
+  methods: {
+    async register() {
+      await this.$axios.post('/user/register', this.form)
+      this.$router.push({
+        name: 'index'
+      })
     }
   }
+}
 </script>

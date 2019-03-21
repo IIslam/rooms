@@ -6,6 +6,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const mailService = require("../services/mail");
 module.exports = {
+  async logout(req, res) {
+    return res.json({
+      status: "OK"
+    });
+  },
   async login(req, res) {
     const { email, password } = req.body;
     let user = await User.findOne({ email }).populate("reservations");
@@ -22,10 +27,6 @@ module.exports = {
       }
       const token = jwt.sign(
         {
-          reservations: user.reservations,
-          rooms: user.rooms,
-          name: user.name,
-          email: user.email,
           id: user._id
         },
         process.env.JWT_KEY,
@@ -133,6 +134,9 @@ module.exports = {
     );
   },
   me(req, res) {
+    User.findOne({ _id: req.userData.id }, (err, user) => {
+      console.log('>>>>>>', user)
+    })
     Reservation.find(
       {
         user: req.userData.id

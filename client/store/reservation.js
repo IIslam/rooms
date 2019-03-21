@@ -78,7 +78,7 @@ export const actions = {
         }).catch(() => {})
     },
     store({commit, getters}, roomId) {
-        return this.$api.reservation().store(roomId, getters.form).then((reservation) => {
+        return this.$api.reservation().store(roomId, getters.form).then(({reservation}) => {
             commit('PUSH_RESERVATION', reservation)
             commit('UNSET_FORM')
             return reservation

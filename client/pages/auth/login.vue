@@ -51,31 +51,33 @@
     </v-content>
 </template>
 <script>
-  export default {
-    middleware: 'guest',
-    data () {
-      return {
-        form: {
-          email: '',
-          password: '',
-        }
+export default {
+  middleware: 'guest',
+  data() {
+    return {
+      form: {
+        email: '',
+        password: ''
       }
-    },
-    computed: {
-      isCompleted() {
-        return this.form.email && this.form.password
-      }
-    },
-    methods : {
-      login(){
-        this.$auth.login({
+    }
+  },
+  computed: {
+    isCompleted() {
+      return this.form.email && this.form.password
+    }
+  },
+  methods: {
+    login() {
+      this.$auth
+        .login({
           data: this.form
-        }).then(() => {
+        })
+        .then(() => {
           this.$route.push({
             name: 'index'
           })
         })
-      },
     }
   }
+}
 </script>

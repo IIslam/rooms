@@ -100,30 +100,30 @@
   </v-content>
 </template>
 <script>
-  import { mapActions } from 'vuex'
-  import { mapFields } from 'vuex-map-fields';
+import { mapActions } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
 
-  export default {
-    middleware: 'auth',
-    data () {
-      return {
-        menu2: false,
-        menu1: false,
-      }
-    },
-    computed: {
-      ...mapFields('room', {
-        end_hour :  'form.end_hour',
-        start_hour :  'form.start_hour',
-        location : 'form.location',
-        name : 'form.name',
-      }),
-      isCompleted() {
-        return this.start_hour && this.end_hour && this.name && this.location
-      }
-    },
-    methods : {
-      ...mapActions('room', ['store']),
+export default {
+  middleware: 'auth',
+  data() {
+    return {
+      menu2: false,
+      menu1: false
     }
+  },
+  computed: {
+    ...mapFields('room', {
+      end_hour: 'form.end_hour',
+      start_hour: 'form.start_hour',
+      location: 'form.location',
+      name: 'form.name'
+    }),
+    isCompleted() {
+      return this.start_hour && this.end_hour && this.name && this.location
+    }
+  },
+  methods: {
+    ...mapActions('room', ['store'])
   }
+}
 </script>

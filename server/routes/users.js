@@ -13,5 +13,6 @@ router.post(
     [guest, AuthPolicy.resetPassword],
     UserController.resetPassword
 );
+router.post("/logout", auth, UserController.logout);
 router.delete("/:id", [auth, AuthPolicy.destroy], UserController.destroy);
 module.exports = router;

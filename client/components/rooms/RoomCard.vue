@@ -41,22 +41,21 @@
       </v-card>
 </template>
 <script>
-    import { mapActions } from 'vuex'
-    export default {
-        props: {
-            active: {
-                required: false,
-                default: false,
-                type: Boolean
-            },
-            room: {
-                required: true,
-                type: Object
-            }
-        },
-        methods: {
-            ...mapActions('room', ['destroy'])
-        }
+import { mapActions } from 'vuex'
+export default {
+  props: {
+    active: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+    room: {
+      required: true,
+      type: Object
     }
-
+  },
+  methods: {
+    ...mapActions('room', ['destroy'])
+  }
+}
 </script>

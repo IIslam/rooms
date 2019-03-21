@@ -22,7 +22,6 @@ reservationSchema.post("find", async (docs, next) => {
     for (let doc of docs) {
         await doc.populate("room").execPopulate();
     }
-
     next();
 });
 

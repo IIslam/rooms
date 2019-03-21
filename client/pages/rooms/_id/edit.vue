@@ -100,41 +100,41 @@
   </v-content>
 </template>
 <script>
-  import { mapActions, mapGetters } from 'vuex'
-  import { mapFields } from 'vuex-map-fields';
+import { mapActions, mapGetters } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
 
-  export default {
-    middleware: 'auth',
-    data () {
-      return {
-        menu2: false,
-        menu1: false,
-      }
-    },
-    async fetch ({ store, params }) {
-      let room = await store.dispatch('room/show', params.id)
-      store.commit('room/SET_FORM', {
-        location: room.location,
-        name: room.name,
-        start_hour: room.start_hour,
-        end_hour: room.end_hour
-      })
-    },
-
-    computed: {
-        ...mapGetters('room', ['room']),
-        ...mapFields('room', {
-            end_hour :  'form.end_hour',
-            start_hour :  'form.start_hour',
-            location : 'form.location',
-            name : 'form.name',
-        }),
-        isCompleted() {
-            return this.start_hour && this.end_hour && this.name && this.location
-        }
-    },
-    methods : {
-      ...mapActions('room', ['update']),
+export default {
+  middleware: 'auth',
+  data() {
+    return {
+      menu2: false,
+      menu1: false
     }
+  },
+  async fetch({ store, params }) {
+    let room = await store.dispatch('room/show', params.id)
+    store.commit('room/SET_FORM', {
+      location: room.location,
+      name: room.name,
+      start_hour: room.start_hour,
+      end_hour: room.end_hour
+    })
+  },
+
+  computed: {
+    ...mapGetters('room', ['room']),
+    ...mapFields('room', {
+      end_hour: 'form.end_hour',
+      start_hour: 'form.start_hour',
+      location: 'form.location',
+      name: 'form.name'
+    }),
+    isCompleted() {
+      return this.start_hour && this.end_hour && this.name && this.location
+    }
+  },
+  methods: {
+    ...mapActions('room', ['update'])
   }
+}
 </script>

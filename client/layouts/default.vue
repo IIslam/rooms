@@ -1,5 +1,5 @@
 <template>
-  <v-app >
+  <v-app>
     <v-navigation-drawer
       v-model="drawer"
       :mini-variant="miniVariant"
@@ -26,64 +26,47 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
-      :clipped-left="clipped"
-      fixed
-      app
-    >
+    <v-toolbar :clipped-left="clipped" fixed app>
       <v-toolbar-side-icon @click="drawer = !drawer" />
-      <v-btn
-        icon
-        @click.stop="miniVariant = !miniVariant"
-      >
+      <v-btn icon @click.stop="miniVariant = !miniVariant">
         <v-icon>{{ `chevron_${miniVariant ? 'right' : 'left'}` }}</v-icon>
       </v-btn>
       <v-toolbar-title v-text="title" />
-          <v-spacer></v-spacer>
-          <template v-if="authenticated">
-            {{ user.name }}
-          </template>
+      <v-spacer></v-spacer>
+      <template v-if="authenticated">
+        {{ user.name }}
+      </template>
 
-           <v-menu bottom left>
+      <v-menu bottom left>
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon>apps</v-icon>
+          </v-btn>
+        </template>
 
-            <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                v-on="on"
-              >
-                <v-icon>apps</v-icon>
-              </v-btn>
-            </template>
-
-            <v-list v-if="authenticated">
-              <v-list-tile
-                v-for="(item, i) in auth"
-                :key="i"
-              >
-                <v-list-tile-title>
-                  <nuxt-link :to="item.to" >
-                    <v-icon>{{ item.icon }}</v-icon>
-                    {{ item.title }}
-                  </nuxt-link>
-                </v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile>
-                <v-list-tile-title @click.prevent="logoutUser"> <a href="#"><v-icon>forward</v-icon>Logout</a> </v-list-tile-title>
-              </v-list-tile>
-            </v-list>
-            <v-list v-else>
-              <v-list-tile
-                v-for="(item, i) in guest"
-                :key="i"
-              >
-                <v-list-tile-title>
-                  <nuxt-link :to="item.to"> {{ item.title }}</nuxt-link>
-                </v-list-tile-title>
-              </v-list-tile>
-              
-            </v-list>
-          </v-menu>
-
+        <v-list v-if="authenticated">
+          <v-list-tile v-for="(item, i) in auth" :key="i">
+            <v-list-tile-title>
+              <nuxt-link :to="item.to">
+                <v-icon>{{ item.icon }}</v-icon>
+                {{ item.title }}
+              </nuxt-link>
+            </v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile>
+            <v-list-tile-title @click.prevent="$auth.logout">
+              <a href="#"><v-icon>forward</v-icon>Logout</a>
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+        <v-list v-else>
+          <v-list-tile v-for="(item, i) in guest" :key="i">
+            <v-list-tile-title>
+              <nuxt-link :to="item.to"> {{ item.title }}</nuxt-link>
+            </v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </v-toolbar>
 
     <v-content>
@@ -91,17 +74,14 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-footer
-      :fixed="fixed"
-      app
-    >
+    <v-footer :fixed="fixed" app>
       <span>Vodafone Rooms &copy; 2019</span>
     </v-footer>
   </v-app>
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   data() {
     return {
@@ -136,31 +116,31 @@ export default {
           title: 'Login',
           to: '/auth/login'
         }
-
       ],
       items: [
         {
           icon: 'apps',
           title: 'Home',
           to: '/'
-        },
+        }
       ],
       miniVariant: false,
       title: 'Vodafone Rooms'
     }
-  },
-  methods: {
-    ...mapActions('auth', ['logout']),
-    logoutUser() {
-      this.logout().then(() => {
-        window.location = '/'
-      })
-    }
   }
+  // methods: {
+  //   ...mapActions('auth', ['logout']),
+  //   logoutUser() {
+  //     this.logout().then(() => {
+  //       this.$auth.reset()
+  //       window.location = '/'
+  //     })
+  //   }
+  // }
 }
 </script>
 <style>
-  a {
-    text-decoration: none
-  }
+a {
+  text-decoration: none;
+}
 </style>

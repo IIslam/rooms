@@ -1,4 +1,5 @@
 const Room = require("../models/Room");
+const Reservation = require("../models/Reservation")
 const mongoose = require("mongoose");
 const moment = require("moment");
 module.exports = {
@@ -127,6 +128,11 @@ module.exports = {
 
                 if (room && !_.size(room.reservations)) {
                     Room.findByIdAndRemove(room.id, (err, room) => {
+                        Reservation.deleteMany({
+                            room: req.params.id
+
+                        })
+
                         if (err) {
                             return res.status(404).json({
                                 err

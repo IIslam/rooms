@@ -55,33 +55,33 @@
   </v-content>
 </template>
 <script>
-  import Datepicker from 'vuejs-datetimepicker'
-  import { mapActions, mapGetters } from 'vuex'
-  import { mapFields } from 'vuex-map-fields';
+import Datepicker from 'vuejs-datetimepicker'
+import { mapActions, mapGetters } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
 
-  export default {
-    middleware: 'auth',
-    components: {
-      Datepicker
-    },
-    async fetch ({ store, params, query }) {
-      await store.dispatch('reservation/show', params.id)
-      await store.dispatch('room/show', query.roomId)
-    },
-    computed: {
-      ...mapGetters('reservation', ['reservation']),
-      ...mapGetters('room', ['room']),
-      ...mapFields('reservation', {
-        start_date:  'form.start_date',
-        end_date:  'form.end_date',
-      }),
+export default {
+  middleware: 'auth',
+  components: {
+    Datepicker
+  },
+  async fetch({ store, params, query }) {
+    await store.dispatch('reservation/show', params.id)
+    await store.dispatch('room/show', query.roomId)
+  },
+  computed: {
+    ...mapGetters('reservation', ['reservation']),
+    ...mapGetters('room', ['room']),
+    ...mapFields('reservation', {
+      start_date: 'form.start_date',
+      end_date: 'form.end_date'
+    }),
 
-      isCompleted() {
-        return this.start_date && this.end_date
-      }
-    },
-    methods: {
-      ...mapActions('reservation', ['update']),
+    isCompleted() {
+      return this.start_date && this.end_date
     }
-  };
+  },
+  methods: {
+    ...mapActions('reservation', ['update'])
+  }
+}
 </script>

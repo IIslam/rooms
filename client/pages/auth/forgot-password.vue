@@ -34,29 +34,27 @@
   </v-content>
 </template>
 <script>
-  import { mapActions } from 'vuex'
-  export default {
-    middleware: 'guest',
-    data () {
-        return {
-          form : {
-            email : null
-          }
-        }
-    },
-    computed: {
-      isCompleted() {
-        return this.form.email
-      }
-    },
-   methods : {
-      ...mapActions('auth', [
-        'forgotPassword'
-      ]),
-
-      submit(){
-        this.forgotPassword(this.form)
+import { mapActions } from 'vuex'
+export default {
+  middleware: 'guest',
+  data() {
+    return {
+      form: {
+        email: null
       }
     }
+  },
+  computed: {
+    isCompleted() {
+      return this.form.email
+    }
+  },
+  methods: {
+    ...mapActions('auth', ['forgotPassword']),
+
+    submit() {
+      this.forgotPassword(this.form)
+    }
   }
+}
 </script>

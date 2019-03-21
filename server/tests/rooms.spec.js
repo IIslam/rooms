@@ -77,7 +77,6 @@ describe("Rooms Test", function() {
         done();
       });
   });
-
   it("Should return a 404 response if showing a non-existing reservation", done => {
     chai
       .request(app)

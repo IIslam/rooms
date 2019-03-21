@@ -55,31 +55,31 @@
   </v-content>
 </template>
 <script>
-  import Datepicker from 'vuejs-datetimepicker'
-  import { mapActions, mapGetters } from 'vuex'
-  import { mapFields } from 'vuex-map-fields';
+import Datepicker from 'vuejs-datetimepicker'
+import { mapActions, mapGetters } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
 
-  export default {
-    middleware: 'auth',
-    components: {
-      Datepicker
-    },
-    async fetch ({ store, params }) {
-      await store.dispatch('room/show', params.id)
-    },
-    computed: {
-      ...mapGetters('room', ['room']),
-      ...mapFields('reservation', {
-        start_date:  'form.start_date',
-        end_date:  'form.end_date',
-      }),
+export default {
+  middleware: 'auth',
+  components: {
+    Datepicker
+  },
+  async fetch({ store, params }) {
+    await store.dispatch('room/show', params.id)
+  },
+  computed: {
+    ...mapGetters('room', ['room']),
+    ...mapFields('reservation', {
+      start_date: 'form.start_date',
+      end_date: 'form.end_date'
+    }),
 
-      isCompleted() {
-        return this.start_date && this.end_date
-      }
-    },
-    methods: {
-      ...mapActions('reservation', ['store']),
+    isCompleted() {
+      return this.start_date && this.end_date
     }
-  };
+  },
+  methods: {
+    ...mapActions('reservation', ['store'])
+  }
+}
 </script>

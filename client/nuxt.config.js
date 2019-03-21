@@ -1,26 +1,22 @@
 const pkg = require('./package')
 
-
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 const webpack = require('webpack')
 
 module.exports = {
   chainWebpack: config => {
     if (process.env.NODE_ENV === 'development') {
-      config
-        .output
-        .filename('[name].[hash].js') 
-        .end() 
-    }  
+      config.output.filename('[name].[hash].js').end()
+    }
   },
-   env: {
+  env: {
     baseUrl: process.env.BASE_URL || 'http://localhost:3000'
   },
   mode: 'universal',
 
   /*
-  ** Headers of the page
-  */
+   ** Headers of the page
+   */
   head: {
     title: pkg.name,
     meta: [
@@ -39,8 +35,8 @@ module.exports = {
   },
 
   /*
-  ** Customize the progress-bar color
-  */
+   ** Customize the progress-bar color
+   */
   loading: { color: '#8b0000' },
   auth: {
     redirect: {
@@ -56,7 +52,7 @@ module.exports = {
           },
           user: {
             url: '/user',
-            method: 'get',
+            method: 'get'
           },
           logout: {
             url: '/user/logout',
@@ -64,20 +60,17 @@ module.exports = {
             propertyName: 'data'
           }
         }
-
       }
     }
   },
   /*
-  ** Global CSS
-  */
-  css: [
-    '~/assets/style/app.styl'
-  ],
+   ** Global CSS
+   */
+  css: ['~/assets/style/app.styl'],
 
   /*
-  ** Plugins to load before mounting the App
-  */
+   ** Plugins to load before mounting the App
+   */
   plugins: [
     '@/plugins/vuetify',
     '@/plugins/mixins/user.js',
@@ -86,8 +79,8 @@ module.exports = {
   ],
 
   /*
-  ** Nuxt.js modules
-  */
+   ** Nuxt.js modules
+   */
   router: {
     middleware: []
   },
@@ -96,22 +89,27 @@ module.exports = {
     '@nuxtjs/axios',
     '@nuxtjs/auth',
     '@nuxtjs/pwa',
-    ['@nuxtjs/toast', {
-      duration: 1000
-    }],
+    [
+      '@nuxtjs/toast',
+      {
+        duration: 1000
+      }
+    ],
 
-    ['nuxt-validate', {
-      lang: 'es'
-    }]
- 
+    [
+      'nuxt-validate',
+      {
+        lang: 'es'
+      }
+    ]
   ],
   toast: {
     position: 'top-right',
-    duration: 800,
+    duration: 800
   },
   /*
-  ** Axios module configuration
-  */
+   ** Axios module configuration
+   */
   axios: {
     baseURL: 'http://127.0.0.1:4000/api/',
     redirectError: {
@@ -121,10 +119,9 @@ module.exports = {
   },
 
   /*
-  ** Build configuration
-  */
+   ** Build configuration
+   */
   build: {
-
     postcss: {
       preset: {
         features: {
@@ -133,19 +130,21 @@ module.exports = {
       }
     },
     transpile: ['vuetify/lib'],
-    plugins: [new VuetifyLoaderPlugin(),  new webpack.ProvidePlugin({
-      '_': 'lodash'
-    })],
+    plugins: [
+      new VuetifyLoaderPlugin(),
+      new webpack.ProvidePlugin({
+        _: 'lodash'
+      })
+    ],
     loaders: {
       stylus: {
-        import: ["~assets/style/variables.styl"]
+        import: ['~assets/style/variables.styl']
       }
     },
-    
+
     /*
-    ** You can extend webpack config here
-    */
-    extend(config, ctx) {
-    }
+     ** You can extend webpack config here
+     */
+    extend(config, ctx) {}
   }
 }

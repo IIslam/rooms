@@ -43,6 +43,7 @@ userSchema.post("save", (doc, next) => {
     doc.populate("reservations")
         .execPopulate()
         .then(() => next());
+    console.log(doc)
 });
 
-module.exports = mongoose.model("User", userSchema, "User");
+module.exports = mongoose.model("User", userSchema);

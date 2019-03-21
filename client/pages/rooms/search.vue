@@ -82,32 +82,32 @@
   </v-content>
 </template>
 <script>
-  import { mapActions, mapGetters } from 'vuex'
-  import { mapFields } from 'vuex-map-fields';
-  import RoomCard from '@/components/rooms/RoomCard'
-  export default {
-    middleware: 'auth',
-    components: {
-        RoomCard
-    },
-    data () {
-      return {
-        menu2: false,
-        menu1: false,
-      }
-    },
-    computed: {
-      ...mapGetters('room',['searchedRooms']),
-      ...mapFields('room', {
-        end_hour :  'form.end_hour',
-        start_hour :  'form.start_hour',
-      }),
-      isCompleted() {
-        return this.start_hour && this.end_hour
-      }
-    },
-    methods : {
-      ...mapActions('room', ['search']),
+import { mapActions, mapGetters } from 'vuex'
+import { mapFields } from 'vuex-map-fields'
+import RoomCard from '@/components/rooms/RoomCard'
+export default {
+  middleware: 'auth',
+  components: {
+    RoomCard
+  },
+  data() {
+    return {
+      menu2: false,
+      menu1: false
     }
+  },
+  computed: {
+    ...mapGetters('room', ['searchedRooms']),
+    ...mapFields('room', {
+      end_hour: 'form.end_hour',
+      start_hour: 'form.start_hour'
+    }),
+    isCompleted() {
+      return this.start_hour && this.end_hour
+    }
+  },
+  methods: {
+    ...mapActions('room', ['search'])
   }
+}
 </script>

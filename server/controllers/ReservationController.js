@@ -36,9 +36,10 @@ module.exports = {
         );
         req.body.start_date = new Date(req.body.start_date);
         req.body.end_date = new Date(req.body.end_date);
-
-        if (_.size(room.reservations)) {
-            Reservation.count(
+        const reservations = await Reservation.find({
+            room: room.id
+        })
+            Reservation.countDocuments(
                 {
                     start_date: {
                         $lte: req.body.start_date
@@ -49,6 +50,12 @@ module.exports = {
                     room: room.id
                 },
                 (err, count) => {
+                    if (err) {
+                        return res.status(400).json({
+                            err
+                        });
+                    }
+
                     if (count) {
                         return res.status(422).json({
                             error: {
@@ -57,30 +64,23 @@ module.exports = {
                             }
                         });
                     }
-                    if (err) {
-                        return res.status(400).json({
-                            err
+                    req.body.user = req.userData.id;
+                    req.body.room = room.id;
+
+                    Reservation.create(req.body, (err, reservation) => {
+                        Room.findByIdAndUpdate(req.params.roomId, {
+                            $push: { reservations: reservation._id }
                         });
-                    }
+                        User.findByIdAndUpdate(req.userData.id, {
+                            $push: { reservations: reservation._id }
+                        });
+                        return res.status(201).json({
+                            reservation,
+                            message: "Alright, we picked up the room for you."
+                        });
+                    });
                 }
             );
-        }
-
-        req.body.user = req.userData.id;
-        req.body.room = room.id;
-
-        Reservation.create(req.body, (err, reservation) => {
-            Room.findByIdAndUpdate(req.params.roomId, {
-                $push: { reservations: reservation._id }
-            });
-            User.findByIdAndUpdate(req.userData.id, {
-                $push: { reservations: reservation._id }
-            });
-            return res.status(201).json({
-                reservation,
-                message: "Alright, we picked up the room for you."
-            });
-        });
     },
     update(req, res) {
         req.body.start_date = new Date(req.body.start_date);
@@ -140,7 +140,7 @@ module.exports = {
             }
         );
     },
-    async destroy(req, res, next) {
+    destroy(req, res) {
         Reservation.findByIdAndRemove(req.params.id, (err, reservation) => {
             if (err) {
                 return res.status(404).send({

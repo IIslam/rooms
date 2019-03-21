@@ -133,7 +133,6 @@ describe("User Test", function() {
         end_hour: 10
       },
       (err, room) => {
-        console.log(err);
         Reservation.create(
           {
             start_date: "2019-02-12T05:00:00.000+0000",
