@@ -3,7 +3,7 @@
     <v-container fluid>
       <v-layout align-center justify-center>
         <v-flex xs12 sm8 md4>
-          <v-form lazy-validation >
+          <v-form lazy-validation>
             <v-flex xs12>
               <v-menu
                 ref="menu"
@@ -77,7 +77,12 @@
           </v-form>
         </v-flex>
       </v-layout>
-            <room-card v-if="searchedRooms" v-for="room in searchedRooms" :key="room.id" :room="room" />
+      <room-card
+        v-if="searchedRooms"
+        v-for="room in searchedRooms"
+        :key="room.id"
+        :room="room"
+      />
     </v-container>
   </v-content>
 </template>

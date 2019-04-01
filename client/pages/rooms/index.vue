@@ -1,6 +1,6 @@
 <template>
   <div>
-    <room-card  v-for="room in rooms" :key="room.id" :room="room"/>
+    <room-card v-for="room in rooms" :key="room.id" :room="room" />
   </div>
 </template>
 <script>

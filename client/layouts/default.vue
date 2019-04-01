@@ -128,15 +128,6 @@ export default {
       title: 'Vodafone Rooms'
     }
   }
-  // methods: {
-  //   ...mapActions('auth', ['logout']),
-  //   logoutUser() {
-  //     this.logout().then(() => {
-  //       this.$auth.reset()
-  //       window.location = '/'
-  //     })
-  //   }
-  // }
 }
 </script>
 <style>

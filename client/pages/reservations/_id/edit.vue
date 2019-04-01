@@ -1,5 +1,5 @@
 <template>
-<v-content>
+  <v-content>
     <v-container fluid fill-height>
       <v-layout align-center justify-center>
         <v-flex xs12 sm8 md4>
@@ -17,7 +17,10 @@
                   <div>
                     <div class="headline">{{ room.name }}</div>
                     <div>{{ room.location }}</div>
-                    <div>available from {{ room.start_hour }} to {{ room.end_hour }}</div>
+                    <div>
+                      available from {{ room.start_hour }} to
+                      {{ room.end_hour }}
+                    </div>
                   </div>
                 </v-card-title>
               </v-flex>
@@ -32,22 +35,37 @@
                   label="Reservation start date"
                   prepend-icon="date_range"
                 >
-                  <Datepicker v-model="start_date" name='start_date' format="YYYY-MM-DD H:i:s" width="100%" />
-                </v-input>
-              </v-flex>
-            </v-layout>                      
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-input
-                  label="Reservation end date"
-                  prepend-icon="date_range"
-                >
-                  <Datepicker v-model="end_date" name='end_date' format="YYYY-MM-DD H:i:s" width="100%" />
+                  <Datepicker
+                    v-model="start_date"
+                    name="start_date"
+                    format="YYYY-MM-DD H:i:s"
+                    width="100%"
+                  />
                 </v-input>
               </v-flex>
             </v-layout>
-            <v-btn small @click.prevent="update({ reservationId: $route.params.id, roomId: $route.query.roomId})">update reservation</v-btn>
-
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-input label="Reservation end date" prepend-icon="date_range">
+                  <Datepicker
+                    v-model="end_date"
+                    name="end_date"
+                    format="YYYY-MM-DD H:i:s"
+                    width="100%"
+                  />
+                </v-input>
+              </v-flex>
+            </v-layout>
+            <v-btn
+              small
+              @click.prevent="
+                update({
+                  reservationId: $route.params.id,
+                  roomId: $route.query.roomId
+                })
+              "
+              >update reservation</v-btn
+            >
           </v-form>
         </v-flex>
       </v-layout>
