@@ -1,14 +1,14 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = require("mongoose").set("debug", true);
+const Schema = mongoose.Schema;
 const reservationSchema = new Schema({
-    user : [{
-    type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
-    room: [{
+    user: {
         type: Schema.Types.ObjectId,
-        ref: 'Room'
-    }],
+        ref: "User"
+    },
+    room: {
+        type: Schema.Types.ObjectId,
+        ref: "Room"
+    },
     start_date: {
         type: Date,
         required: true
@@ -17,5 +17,12 @@ const reservationSchema = new Schema({
         type: Date,
         required: true
     }
-})
-module.exports = mongoose.model('Reservation', reservationSchema)
+});
+reservationSchema.post("find", async (docs, next) => {
+    for (let doc of docs) {
+        await doc.populate("room").execPopulate();
+    }
+    next();
+});
+
+module.exports = mongoose.model("Reservation", reservationSchema);
